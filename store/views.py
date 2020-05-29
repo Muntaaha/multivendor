@@ -4,10 +4,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from .forms import RegistrationForm
 from product.models import *
 from .models import *
+from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .decorators import *
 
+
+@unauthenticated_user
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username') 
@@ -22,16 +26,21 @@ def user_login(request):
     context = {}
     return render(request, 'store/login.html', context)
 
+
 def user_register(request):
     form = RegistrationForm()
 
     if request.method =='POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            username = form.cleaned_data.get('username')
+
+            group = Group.objects.get(name='customer')
+            user.group.add(group)
+
+            messages.success(request, 'Account has been created for '+username)
             return redirect('login')
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account has been created for '+user)
 
     context = {'form':form}
     return render(request, 'store/register.html', context)
@@ -41,6 +50,7 @@ def user_logout(request):
     return redirect('login')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def store(request):
     products = Product.objects.all()
     context = {'products':products}
