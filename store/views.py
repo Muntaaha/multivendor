@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import *
 
 
-@unauthenticated_user
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username') 
@@ -33,24 +33,29 @@ def user_register(request):
     if request.method =='POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
+            username = form.cleaned_data.get('name')
+            email = form.cleaned_data.get('email')
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+            if password1 == password2:
+                user = User.objects.create_user(username=username, email=email, password=password1)
+                instance = form.save(commit=False)
+                instance.user = user
+                instance.save()
 
-            group = Group.objects.get(name='customer')
-            user.group.add(group)
-
-            messages.success(request, 'Account has been created for '+username)
-            return redirect('login')
+                messages.success(request, 'Account has been created for '+username)
+                return redirect('login')
 
     context = {'form':form}
     return render(request, 'store/register.html', context)
+
 
 def user_logout(request):
     logout(request)
     return redirect('login')
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['customer'])
+# @allowed_users(allowed_roles=['customer'])
 def store(request):
     products = Product.objects.all()
     context = {'products':products}
