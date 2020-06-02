@@ -1,12 +1,18 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
+
 from .forms import RegistrationForm
+
 from product.models import *
 from order.models import *
 from .models import *
 from django.contrib.auth.models import Group
 from django.contrib.auth import authenticate, login, logout
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import *
@@ -90,3 +96,30 @@ def checkout(request):
         order = {'get_cart_items': 0, 'get_cart_total':0}
     context = {'items':items, 'order':order}
     return render(request,'store/checkout.html',context)
+
+
+def updateItem(request):
+    data = json.loads(request.body)
+    productId = data['productId']
+    action = data['action']
+
+    print('Action:', action)
+    print('Product:', productId)
+
+    customer = request.user.customer
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        orderItem.quantity = (orderItem.quantity + 1)
+    elif action == 'remove':
+        orderItem.quantity = (orderItem.quantity - 1)
+
+    orderItem.save()
+
+    if orderItem.quantity <= 0:
+        orderItem.delete()
+
+    return JsonResponse('Item was added', safe=False)
