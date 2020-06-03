@@ -4,7 +4,7 @@
 <head>
 	<title>Multi Vendor</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
@@ -14,20 +14,21 @@
     var user = '{{request.user}}'
 
     function getToken(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-      }
-      return cookieValue;
-  }
-  var csrftoken = getToken('csrftoken');
+        return cookieValue;
+    }
+    var csrftoken = getToken('csrftoken')
+
   </script>
 </head>
 <body>
@@ -67,7 +68,7 @@
                 <a href="{% url 'cart' %}">
                    <img  id="cart-icon" src="{% static 'images/cart.png' %}">
                </a>
-               <p id="cart-total">0</p>
+               <p id="cart-total">{{cartItems}}</p>
        
            </div>
         </div>

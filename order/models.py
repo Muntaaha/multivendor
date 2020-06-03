@@ -30,9 +30,12 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
+    def __str__(self):
+        return str(self.id)
+
     @property
     def get_total(self):
-        total = self.product.price * self.quantity
+        total = self.price * self.quantity
         return total
 
 class ShippingDetails(models.Model):
