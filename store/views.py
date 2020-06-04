@@ -75,7 +75,7 @@ def store(request):
 
 
     products = Product.objects.all()
-    context = {'products':products, 'cartItems':cartItems}
+    context = {'products':products, 'cartItems':cartItems, 'shipping': False}
     return render(request,'store/store.html',context)
 
 @login_required(login_url='login')
@@ -93,7 +93,7 @@ def cart(request):
     else:
         items = []
         order = {'get_cart_items': 0, 'get_cart_total':0}
-    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    context = {'items':items, 'order':order, 'cartItems':cartItems, 'shipping': False}
     return render(request,'store/cart.html',context)
 
 @login_required(login_url='login')
@@ -106,7 +106,7 @@ def checkout(request):
     else:
         items = []
         order = {'get_cart_items': 0, 'get_cart_total':0}
-    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    context = {'items':items, 'order':order, 'cartItems':cartItems, 'shipping': False}
     return render(request,'store/checkout.html',context)
 
 
