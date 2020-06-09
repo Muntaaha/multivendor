@@ -107,6 +107,21 @@
             'state': null,
             'zipcode': null,
         }
+
+        if(shipping != 'False'){
+            shippingInfo.address = form.address.value
+            shippingInfo.city = form.city.value
+            shippingInfo.state = form.state.value
+            shippingInfo.zipcode = form.zipcode.value
+        }
+
+        if(user == 'AnonymousUser'){
+            userFormData.name = form.name.value
+            userFormData.email = form.email.value
+        }
+
+        console.log('Shipping Info:', shippingInfo)
+        console.log('User Info:', userFormData)
     }
 </script>
 {% endblock content %}
