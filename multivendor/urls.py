@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from store.views import user_login, user_logout, user_register, user_profile, updateItem
+from store.views import user_login, user_logout, user_register, user_profile, updateItem, processOrder
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,7 +12,8 @@ urlpatterns = [
     path('logout/', user_logout, name='logout'),
     path('user/', user_profile, name='user_profile'),
 
-	path('update_item/', updateItem, name="update_item")
+	path('update_item/', updateItem, name="update_item"),
+    path('process_order/', processOrder, name="process_order"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
