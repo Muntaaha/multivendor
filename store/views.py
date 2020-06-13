@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import json
-
+import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 
@@ -138,4 +138,12 @@ def updateItem(request):
 
 
 def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+    else:
+        print('User is not logged in..')
     return JsonResponse('Payment Completed', safe=False)
